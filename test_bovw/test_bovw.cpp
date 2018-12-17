@@ -13,6 +13,62 @@ using namespace cv;
 using namespace ml;
 using namespace TCLAP;
 
+/**
+ * \brief Read the trained classifier from a file.
+ * \param classifierFile is the path to the file.
+ * \return the trained classifier.
+ */
+Ptr<StatModel> ReadClassifier(string& classifierFile)
+{
+	// read the classifier
+	Ptr<StatModel> trainedClassifier;
+
+	const int classifierType = GetClassifierValue();
+
+	switch (classifierType)
+	{
+		case 1:
+		{
+			const Ptr<KNearest> kNNclassifier = KNearest::load<KNearest>(classifierFile);
+			const int k = GetKnnValue();
+
+			kNNclassifier->setDefaultK(k);
+			trainedClassifier = kNNclassifier;
+
+			break;
+		}
+		case 2:
+		{
+			const Ptr<SVM> svm = Algorithm::load<SVM>(classifierFile);
+			trainedClassifier = svm;
+
+			break;
+		}
+		case 3:
+		{
+			const Ptr<RTrees> randomForest = Algorithm::load<RTrees>(classifierFile);
+			trainedClassifier = randomForest;
+
+			break;
+		}
+		case 4:
+		{
+			const Ptr<Boost> boosting = Algorithm::load<Boost>(classifierFile);
+			trainedClassifier = boosting;
+
+			break;
+		}
+		default:
+		{
+			clog << "ERROR: Unknown classifier type!" << endl;
+
+			exit(-1);
+		}
+	}
+
+	return trainedClassifier;
+}
+
 int main(const int argc, char* argv[])
 {
 	CmdLine cmd("Test a BoVW model", ' ', "0.0");
@@ -36,7 +92,8 @@ int main(const int argc, char* argv[])
 	LoadDatasetInformation(config_file.getValue(), categories, numberOfSamplesPerCategory);
 	
 	const auto descriptor = GetDescriptorValue();
-	const int k = GetKnnValue();
+
+	const Ptr<StatModel> trainedClassifier = ReadClassifier(classifier.getValue());
 	
 	const string fileNamePrefix = "./images/image_0";
 
@@ -101,11 +158,6 @@ int main(const int argc, char* argv[])
 
 		// calculate the BoVW
 		const Mat bovw = ComputeBovw(dictionary, keywords, descriptors);
-
-		// read the classifier
-		const Ptr<KNearest> kNNclassifier = KNearest::load<KNearest>(classifier.getValue());
-		kNNclassifier->setDefaultK(k);
-		const Ptr<StatModel> trainedClassifier = kNNclassifier;
 		   
 		// predict the labels
 		Mat predictedLabels;
