@@ -348,3 +348,87 @@ int GetKnnValue()
 
 	return kNN;
 }
+
+int GetClassifierValue()
+{
+	int classifier = 1;
+	bool ok = false;
+
+	while (!ok)
+	{
+		clog << "Select the classifier type (1 = kNN, 2 = SVM, 3 = Random Forest, 4 = Boosting): ";
+		cin >> classifier;
+
+		if (classifier > 0 && classifier < 5)
+		{
+			ok = true;
+		}
+	}
+
+	return classifier;
+}
+
+double GetSvmMarginValue()
+{
+	double margin = 1;
+
+	clog << "Enter SVM classifier margin: ";
+	cin >> margin;
+
+	return margin;
+}
+
+SVM::KernelTypes GetSvmKernelType()
+{
+	int kernelType = 1;
+	bool ok = false;
+
+	while (!ok)
+	{
+		clog << "Select the SVM classifier kernel type (1 = Linear, 2 = Radial, 3 = Polynomial): ";
+		cin >> kernelType;
+
+		if (kernelType > 0 && kernelType < 4)
+		{
+			ok = true;
+		}
+	}
+
+	switch (kernelType)
+	{
+		case 1:  return  SVM::LINEAR;
+		case 2:  return  SVM::RBF;
+		case 3:  return  SVM::POLY;
+		default: return  SVM::LINEAR;
+	}
+}
+
+int GetRandomForestMaxDepth()
+{
+	int maxDepth = 1;
+
+	clog << "Enter Random Forest maximum depth: ";
+	cin >> maxDepth;
+
+	return maxDepth;
+}
+
+int GetRandomForestMinimumSamplesCount()
+{
+	int minSamples = 1;
+
+	clog << "Enter Random Forest minimum samples count: ";
+	cin >> minSamples;
+
+	return minSamples;
+}
+
+int GetNumberOfTrees()
+{
+	int trees = 1;
+
+	clog << "Enter the number of trees: ";
+	cin >> trees;
+
+	return trees;
+}

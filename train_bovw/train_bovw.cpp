@@ -123,6 +123,72 @@ void ShowConfusionMatrix(const Mat& confusionMatrix)
 	}
 }
 
+/**
+ * \brief Gets various inputs from the user to determine the classifier type.
+ * \return the classifier.
+ */
+Ptr<StatModel> GetClassifier()
+{
+	Ptr<StatModel> classifier;
+
+	const int classifierType = GetClassifierValue();
+	
+	switch (classifierType)
+	{
+		case 1:
+		{
+			Ptr<KNearest> knnClassifier = KNearest::create();
+			knnClassifier->setAlgorithmType(KNearest::BRUTE_FORCE);
+			knnClassifier->setDefaultK(GetKnnValue());
+			knnClassifier->setIsClassifier(true);
+
+			classifier = knnClassifier;
+
+			break;
+		}
+		case 2:
+		{
+			Ptr<SVM> svm = SVM::create();
+			svm->setType(SVM::C_SVC);
+			svm->setKernel(GetSvmKernelType());
+			svm->setC(GetSvmMarginValue());
+			svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-6));
+
+			classifier = svm;
+
+			break;
+		}
+		case 3:
+		{
+			Ptr<RTrees> randomForest = RTrees::create();
+			randomForest->setMaxDepth(GetRandomForestMaxDepth());
+			randomForest->setMinSampleCount(GetRandomForestMinimumSamplesCount()); // Min_samples                                    
+			randomForest->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, GetNumberOfTrees(), 1e-6));
+
+			classifier = randomForest;
+
+			break;
+		}
+		case 4:
+		{
+			Ptr<Boost> boosting = Boost::create();
+			boosting->setBoostType(Boost::DISCRETE);
+
+			classifier = boosting;
+
+			break;
+		}
+		default:
+		{
+			clog << "ERROR: No suitable classifier configured!" << endl;
+
+			exit(-1);
+		}
+	}
+
+	return classifier;
+}
+
 int main(const int argc, char* argv[])
 {
 	CmdLine cmd("Train and test a BoVW model", ' ', "0.0");
@@ -160,8 +226,10 @@ int main(const int argc, char* argv[])
 	double bestRecognitionRate = 0.0;
 
 	const int descriptorType = GetDescriptorValue();
-	const int kNN = GetKnnValue();
 
+	// create the classifier
+	Ptr<StatModel> classifier = GetClassifier();
+	
 	for (int trial = 0; trial < n_runsArg.getValue(); trial++)
 	{
 		clog << "########## TRIAL " << trial + 1 << " ##########" << endl;
@@ -317,14 +385,6 @@ int main(const int argc, char* argv[])
 
 		// free not needed memory
 		trainingDescriptors.release();
-
-		// create the classifier
-		// train a kNN classifier using the training BoVWs like patterns.
-		Ptr<KNearest> knnClassifier = KNearest::create();
-		knnClassifier->setAlgorithmType(KNearest::BRUTE_FORCE);
-		knnClassifier->setDefaultK(kNN);
-		knnClassifier->setIsClassifier(true);
-		Ptr<StatModel> classifier = knnClassifier;
 
 		Mat train_labels(train_labels_v);
 		classifier->train(train_bovw, ROW_SAMPLE, train_labels);

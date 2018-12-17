@@ -122,4 +122,40 @@ int GetDescriptorValue();
  */
 int GetKnnValue();
 
+/**
+ * @brief Get the classifier type from the user.
+ * @return the classifier type (1 = kNN, 2 = SVM, 3 = Random Forest, 4 = Boosting)
+ */
+int GetClassifierValue();
+
+/**
+ * @brief Get the SVM margin value from the user.
+ * @return the SVM margin value.
+ */
+double GetSvmMarginValue();
+
+/**
+ * @brief Get the SVM classifier kernel type from the user.
+ * @return the type of the SVM kernel.
+ */
+SVM::KernelTypes GetSvmKernelType();
+
+/**
+ * @brief Get the maximum depth of the Random Forest from the user.
+ * @return the Random forest maximum depth.
+ */
+int GetRandomForestMaxDepth();
+
+/**
+ * @brief Get the random forest minimal samples count.
+ * @return the minimum samples to the random forest.
+ */
+int GetRandomForestMinimumSamplesCount();
+
+/**
+ * @brief Get the number of trees for the random forest from the user.
+ * @return the number of trees.
+ */
+int GetNumberOfTrees();
+
 #endif //__COMMON_CODE_HPP__
