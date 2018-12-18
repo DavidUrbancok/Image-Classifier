@@ -117,6 +117,13 @@ Mat ComputeBovw(const Ptr<KNearest>& dictionary, int dictionarySize, Mat& imageD
 int GetDescriptorValue();
 
 /**
+ * @brief Get the value from the user via terminal.
+ * @param[in] message that is displayed to the user.
+ * @return the user's input;
+ */
+int GetValueFromUser(const string& message);
+
+/**
  * @brief Get the 'k' value for kNN classifier from the user.
  * @return the 'k' value for the kNN classifier.
  */

@@ -80,7 +80,7 @@ void LoadAndWriteDataSet(vector<string>& categories, vector<int>& samplesPerCate
 	int returnCode;
 	if ((returnCode = LoadDatasetInformation(datasetDescriptionFile, categories, samplesPerCategory)) != 0)
 	{
-		cerr << "Error: could not load dataset information from '" << datasetDescriptionFile << "' (" << returnCode << ")." << endl;
+		cerr << "ERROR: could not load dataset information from '" << datasetDescriptionFile << "' (" << returnCode << ")." << endl;
 		exit(-1);
 	}
 
@@ -88,7 +88,8 @@ void LoadAndWriteDataSet(vector<string>& categories, vector<int>& samplesPerCate
 
 	if (categories.size() < 2)
 	{
-		cerr << "Error: at least two categories are needed." << endl;
+		cerr << "ERROR: at least two categories are needed!" << endl;
+
 		exit(-1);
 	}
 
@@ -180,7 +181,7 @@ Ptr<StatModel> GetClassifier()
 		}
 		default:
 		{
-			clog << "ERROR: No suitable classifier configured!" << endl;
+			cerr << "ERROR: No suitable classifier configured!" << endl;
 
 			exit(-1);
 		}
@@ -259,7 +260,8 @@ int main(const int argc, char* argv[])
 
 				if (img.empty())
 				{
-					cerr << "Error: could not read image '" << filename << "'." << endl;
+					cerr << "ERROR: could not read image '" << filename << "'." << endl;
+
 					exit(-1);
 				}
 				
@@ -292,7 +294,8 @@ int main(const int argc, char* argv[])
 					}
 					default:
 					{
-						clog << "Unknown descriptor type.";
+						cerr << "ERROR: Unknown descriptor type!";
+
 						exit(-1);
 					}
 				}
@@ -414,7 +417,9 @@ int main(const int argc, char* argv[])
 				Mat img = imread(filename, IMREAD_GRAYSCALE);
 			
 				if (img.empty())
-					cerr << "Error: could not read image '" << filename << "'." << endl;
+				{
+					cerr << "ERROR: could not read image '" << filename << "'." << endl;
+				}
 				else
 				{
 					// fix size

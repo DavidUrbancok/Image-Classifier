@@ -4,12 +4,12 @@
 */
 
 #include "pch.h"
+#include "common_code.hpp"
 #include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "common_code.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/xfeatures2d.hpp>
@@ -339,16 +339,6 @@ int GetDescriptorValue()
 	return descriptor;
 }
 
-int GetKnnValue()
-{
-	int kNN = 1;
-
-	clog << "Enter 'k' value for kNN classifier: ";
-	cin >> kNN;
-
-	return kNN;
-}
-
 int GetClassifierValue()
 {
 	int classifier = 1;
@@ -366,16 +356,6 @@ int GetClassifierValue()
 	}
 
 	return classifier;
-}
-
-double GetSvmMarginValue()
-{
-	double margin = 1;
-
-	clog << "Enter SVM classifier margin: ";
-	cin >> margin;
-
-	return margin;
 }
 
 SVM::KernelTypes GetSvmKernelType()
@@ -403,32 +383,42 @@ SVM::KernelTypes GetSvmKernelType()
 	}
 }
 
+int GetValueFromUser(const string& message)
+{
+	int value = 0;
+
+	clog << message;
+	cin >> value;
+
+	return value;
+}
+
+double GetSvmMarginValue()
+{
+	double margin = 1;
+
+	clog << "Enter SVM classifier margin: ";
+	cin >> margin;
+
+	return margin;
+}
+
+int GetKnnValue()
+{
+	return GetValueFromUser("Enter 'k' value for kNN classifier: ");
+}
+
 int GetRandomForestMaxDepth()
 {
-	int maxDepth = 1;
-
-	clog << "Enter Random Forest maximum depth: ";
-	cin >> maxDepth;
-
-	return maxDepth;
+	return GetValueFromUser("Enter Random Forest maximum depth: ");
 }
 
 int GetRandomForestMinimumSamplesCount()
 {
-	int minSamples = 1;
-
-	clog << "Enter Random Forest minimum samples count: ";
-	cin >> minSamples;
-
-	return minSamples;
+	return GetValueFromUser("Enter Random Forest minimum samples count: ");
 }
 
 int GetNumberOfTrees()
 {
-	int trees = 1;
-
-	clog << "Enter the number of trees: ";
-	cin >> trees;
-
-	return trees;
+	return GetValueFromUser("Enter the number of trees: ");
 }

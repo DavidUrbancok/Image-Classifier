@@ -15,7 +15,7 @@ using namespace TCLAP;
 
 /**
  * \brief Read the trained classifier from a file.
- * \param classifierFile is the path to the file.
+ * \param[in] classifierFile is the path to the file.
  * \return the trained classifier.
  */
 Ptr<StatModel> ReadClassifier(string& classifierFile)
@@ -60,7 +60,7 @@ Ptr<StatModel> ReadClassifier(string& classifierFile)
 		}
 		default:
 		{
-			clog << "ERROR: Unknown classifier type!" << endl;
+			cerr << "ERROR: Unknown classifier type!" << endl;
 
 			exit(-1);
 		}
@@ -89,13 +89,10 @@ int main(const int argc, char* argv[])
 
 	ValueArg<string> img("", "img", "Path to images folder.", false, "./images/image_001.jpg", "string");
 	cmd.add(img);
-
 	ValueArg<string> classifier("", "classifier", "Path to the classifier.", false, "../classifier.yml", "string");
 	cmd.add(classifier);
-
 	ValueArg<string> dict("", "dict", "Path to the dictionary.", false, "../dictionary.yml", "string");
 	cmd.add(dict);
-
 	ValueArg<string> config_file("", "config_file", "Path to the configuration file.", false, "../data/05_ObjectCategories_conf.txt", "string");
 	cmd.add(config_file);
 
@@ -115,7 +112,7 @@ int main(const int argc, char* argv[])
 	VideoCapture capture;
 	if (useCamera && !capture.open(0))
 	{
-		clog << "ERROR: Cannot open the web camera!";
+		cerr << "ERROR: Cannot open the web camera!";
 
 		exit(-1);
 	}
@@ -178,7 +175,7 @@ int main(const int argc, char* argv[])
 			}
 			default:
 			{
-				clog << "ERROR: Unknown descriptor type!";
+				cerr << "ERROR: Unknown descriptor type!";
 
 				exit(-1);
 			}
