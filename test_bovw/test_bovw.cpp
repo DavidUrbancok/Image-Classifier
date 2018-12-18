@@ -1,9 +1,9 @@
 #include "pch.h"
+#include "../train_bovw/common_code.hpp"
 #include <tclap/CmdLine.h>
 #include <opencv2/ml.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
-#include "../train_bovw/common_code.hpp"
 #include <opencv2/highgui.hpp>
 
 #define IMG_WIDTH 300
@@ -69,6 +69,20 @@ Ptr<StatModel> ReadClassifier(string& classifierFile)
 	return trainedClassifier;
 }
 
+/**
+ * \brief Get the input images source from the user.
+ * \return true if the web camera should be used.
+ */
+bool UseCamera()
+{
+	int useCamera = 0;
+
+	clog << "Select input type (1 = Images, 2 = web camera): ";
+	cin >> useCamera;
+
+	return useCamera == 2;
+}
+
 int main(const int argc, char* argv[])
 {
 	CmdLine cmd("Test a BoVW model", ' ', "0.0");
@@ -90,27 +104,51 @@ int main(const int argc, char* argv[])
 	vector<string> categories;
 	vector<int> numberOfSamplesPerCategory;
 	LoadDatasetInformation(config_file.getValue(), categories, numberOfSamplesPerCategory);
-	
+
+	int i = 0;
+
 	const auto descriptor = GetDescriptorValue();
-
 	const Ptr<StatModel> trainedClassifier = ReadClassifier(classifier.getValue());
-	
 	const string fileNamePrefix = "./images/image_0";
+	const bool useCamera = UseCamera();
 
-	for (int i = 1; i <= 10; i++)
+	VideoCapture capture;
+	if (useCamera && !capture.open(0))
+	{
+		clog << "ERROR: Cannot open the web camera!";
+
+		exit(-1);
+	}
+
+	for (;;)
 	{
 		string imageName;
-		if (i < 10)
+		Mat image;
+
+		if (useCamera)
 		{
-			imageName = fileNamePrefix + "0" + to_string(i) + ".jpg";
+			capture >> image;
+
+			if (image.empty())
+			{
+				return 0;
+			}
 		}
 		else
 		{
-			imageName = fileNamePrefix + to_string(i) + ".jpg";
+			i++;
+			if (i < 10)
+			{
+				imageName = fileNamePrefix + "0" + to_string(i) + ".jpg";
+			}
+			else
+			{
+				imageName = fileNamePrefix + to_string(i) + ".jpg";
+			}
+
+			image = imread(imageName, IMREAD_GRAYSCALE);
 		}
 
-
-		Mat image = imread(imageName, IMREAD_GRAYSCALE);
 		resize(image, image, Size(IMG_WIDTH, round(IMG_WIDTH * image.rows / image.cols)));
 
 		vector<int> siftScales{ 9, 13 }; // 5 , 9
@@ -140,7 +178,8 @@ int main(const int argc, char* argv[])
 			}
 			default:
 			{
-				clog << "Unknown descriptor type.";
+				clog << "ERROR: Unknown descriptor type!";
+
 				exit(-1);
 			}
 		}
@@ -165,11 +204,48 @@ int main(const int argc, char* argv[])
 
 		const string category = categories[predictedLabels.at<float>(0, 0)];
 
-		namedWindow(category);
-		imshow(category, imread(imageName));
+		namedWindow("Image");
 
-		if (waitKey(0) == 27) break;
+		Mat imageToShow;
 
-		destroyAllWindows();
+		if (useCamera)
+		{
+			imageToShow = image;
+		}
+		else
+		{
+			imageToShow = imread(imageName);
+		}
+
+		resize(imageToShow, imageToShow, Size(IMG_WIDTH, round(IMG_WIDTH * image.rows / image.cols)));
+
+		putText(imageToShow, category, cvPoint(30, 30), FONT_HERSHEY_PLAIN, 1, cvScalar(0, 0, 255), 1, CV_AA);
+
+		imshow("Image", imageToShow);
+
+		if (useCamera)
+		{
+			if (waitKey(100) == 27)
+			{
+				break;
+			}
+		}
+		else
+		{
+			waitKey(0);
+		}
+
+		if (!useCamera && i == 10)
+		{
+			break;
+		}
+
+	}
+
+	destroyAllWindows();
+	
+	if (useCamera)
+	{
+		capture.release();
 	}
 }

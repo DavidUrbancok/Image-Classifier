@@ -97,7 +97,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\opencv\x86\vc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_core343d.lib;opencv_highgui343d.lib;opencv_imgproc343d.lib;opencv_imgcodecs343d.lib;opencv_ml343d.lib;opencv_features2d343d.lib;opencv_xfeatures2d343d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core343d.lib;opencv_features2d343d.lib;opencv_highgui343d.lib;opencv_imgcodecs343d.lib;opencv_imgproc343d.lib;opencv_ml343d.lib;opencv_videoio343d.lib;opencv_xfeatures2d343d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
