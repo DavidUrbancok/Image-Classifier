@@ -320,7 +320,7 @@ int main(const int argc, char* argv[])
 		
 		CV_Assert(numberOfDescriptorsPerSample.size() == (categories.size()*ntrain.getValue()));
 		
-		clog << "\t\tDescriptors size = " << trainingDescriptors.rows*trainingDescriptors.cols * sizeof(float) / (1024.0 *1024.0) << " MiB." << endl;
+		clog << "\t\tDescriptors size = " << trainingDescriptors.rows*trainingDescriptors.cols * sizeof(float) / (1024.0 * 1024.0) << " MiB." << endl;
 		clog << "\tGenerating " << keywords.getValue() << " keywords ..." << endl;
 		
 		Mat keyws;
@@ -509,7 +509,7 @@ int main(const int argc, char* argv[])
 		}
 	}
 
-	SaveBestModels(keywords.getValue(), bestDictionary, bestClassifier);
+	//SaveBestModels(keywords.getValue(), bestDictionary, bestClassifier);
 
 	ShowConfusionMatrix(bestClassifierConfusionMatrix);
 

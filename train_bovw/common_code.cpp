@@ -217,7 +217,6 @@ void ComputeRecognitionRate(const Mat& confusionMatrix, double& mean, double& de
 	deviation = sqrt(deviation / double(confusionMatrix.rows) - mean * mean);
 }
 
-
 Mat ExtractSparseSIFTDescriptors(const Mat& image, const int numberOfDescriptors)
 {
 	Ptr<SIFT> sparseSift = SIFT::create(numberOfDescriptors);
